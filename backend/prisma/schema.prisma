@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+}
+
+// 1. Define the Role Enum (Matches your DataTypes.ENUM)
+enum Role {
+  student
+  admin
+}
+
+// 2. Define the User Model
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(student)
+  
+  // These replace "timestamps: true"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clubs     Club[]   @relation("UserFollowsClub")
+}
+
+model Club {
+  id          Int      @id @default(autoincrement())
+  name        String
+  handle      String   @unique
+  description String?  @db.Text
+  logoUrl     String?
+  
+  followers   User[]   @relation("UserFollowsClub")
+  events      Event[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id               Int      @id @default(autoincrement())
+  title            String
+  date             DateTime
+  time             String
+  venue            String
+  description      String   @db.Text
+  registrationLink String?
+  imageUrl         String?  @db.Text
+  eligibility      String?
+  deadline         DateTime?
+  
+  clubId           Int
+  club             Club     @relation(fields: [clubId], references: [id])
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

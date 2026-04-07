@@ -2,6 +2,12 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (roles = []) => {
     return (req, res, next) => {
+        // System bypass for automation worker
+        if (req.headers['x-api-key'] === process.env.SYSTEM_API_KEY) {
+            req.user = { id: 0, role: 'admin' };
+            return next();
+        }
+
         // Get token from header (Format: Bearer <token>)
         const token = req.headers['authorization']?.split(' ')[1];
         

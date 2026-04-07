@@ -27,21 +27,33 @@ export default function Auth({ isLogin }) {
     };
 
     return (
-        <div className="auth-card">
-            <h2>{isLogin ? 'Login' : 'Signup'}</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <input type="email" placeholder="Email (@nitk.edu.in)" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                </div>
-                <div className="form-group">
-                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </div>
-                <button type="submit" className="btn-primary">{isLogin ? 'Login' : 'Signup'}</button>
-            </form>
-            <p style={{marginTop: '15px', fontSize: '14px'}}>
-                {isLogin ? "New student? " : "Already have an account? "}
-                <Link to={isLogin ? "/signup" : "/login"}>{isLogin ? "Create account" : "Login here"}</Link>
-            </p>
+        <div className="auth-page">
+            <div className="auth-blob-1"></div>
+            <div className="auth-blob-2"></div>
+            <div className="auth-card glass-panel">
+                <h2 className="auth-title text-gradient">{isLogin ? 'Welcome Back' : 'Join NITK Assist'}</h2>
+                <p className="auth-subtitle">{isLogin ? 'Sign in to access your customized academic hub.' : 'Create an account to streamline your campus life.'}</p>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input className="form-input" type="email" placeholder="student@nitk.edu.in" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input className="form-input" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    </div>
+                    <button type="submit" className="btn-primary">{isLogin ? 'Access System' : 'Create Account'}</button>
+                </form>
+                
+                <div className="auth-divider">OR</div>
+                
+                <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
+                    {isLogin ? "Don't have an account? " : "Already have an account? "}
+                    <Link to={isLogin ? "/signup" : "/login"} style={{ color: 'var(--accent-blue)', fontWeight: '600' }}>
+                        {isLogin ? "Sign up here" : "Login instead"}
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 }

@@ -1,7 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Auth from './pages/Auth';
 import Chat from './components/Chat';
 import Admin from './pages/Admin';
+import Home from './pages/Home';
 import './App.css';
 
 const ProtectedRoute = ({ children, roleRequired }) => {
@@ -12,28 +14,44 @@ const ProtectedRoute = ({ children, roleRequired }) => {
     if (roleRequired && userRole !== roleRequired) return <Navigate to="/chat" />;
     
     return (
-        <div className="container">
+        <div className="app-container">
             <nav className="navbar">
-                <h1 style={{color: '#003366'}}>NITK Assist</h1>
-                <button className="btn-logout" onClick={() => { localStorage.clear(); window.location.href='/login'; }}>
-                    Logout
-                </button>
+                <div className="nav-container">
+                    <div className="nav-brand text-gradient">
+                        NITK Assist
+                    </div>
+                    <div className="nav-links">
+                        <Link to="/home" className="nav-link">Events</Link>
+                        <Link to="/chat" className="nav-link">AI Core</Link>
+                        {userRole === 'admin' && (
+                            <Link to="/admin" className="nav-link">System Admin</Link>
+                        )}
+                        <button className="btn-logout" onClick={() => { localStorage.clear(); window.location.href='/login'; }}>
+                            Disconnect
+                        </button>
+                    </div>
+                </div>
             </nav>
-            {children}
+            <main className="main-content">
+                {children}
+            </main>
         </div>
     );
 };
 
 export default function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/login" element={<Auth isLogin={true} />} />
-                <Route path="/signup" element={<Auth isLogin={false} />} />
-                <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-                <Route path="/admin" element={<ProtectedRoute roleRequired="admin"><Admin /></ProtectedRoute>} />
-                <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-        </Router>
+        <GoogleOAuthProvider clientId="748843608972-7kau66l3kvas9pqvq3upc9s6cqbm3s9i.apps.googleusercontent.com">
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Auth isLogin={true} />} />
+                    <Route path="/signup" element={<Auth isLogin={false} />} />
+                    <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                    <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                    <Route path="/admin" element={<ProtectedRoute roleRequired="admin"><Admin /></ProtectedRoute>} />
+                    <Route path="*" element={<Navigate to="/home" />} />
+                </Routes>
+            </Router>
+        </GoogleOAuthProvider>
     );
 }

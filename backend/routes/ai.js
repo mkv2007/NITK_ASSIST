@@ -12,4 +12,6 @@ router.post('/ask', authMiddleware(['student', 'admin']), aiController.askQuesti
 router.post('/upload', authMiddleware(['admin']), upload.single('file'), aiController.uploadDocument);
 router.delete('/delete/:filename', authMiddleware(['admin']), aiController.deleteDocument);
 
+router.get('/documents', aiController.listDocuments);
+
 module.exports = router;
